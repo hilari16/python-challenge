@@ -4,16 +4,12 @@ import csv
 import numpy as np
 
 election_csv = os.path.join('Resources','election_data.csv')
+output_file = os.path.join('analysis','election_analysis.txt')
 
 # lists to store data
 ballot_id = []
 county = []
 candidate = []
-
-print("Election Results")
-print()
-print("-----------------------")
-print()
 
 with open(election_csv) as csvfile:
     csvreader = csv.reader(csvfile, delimiter=",")
@@ -30,12 +26,7 @@ with open(election_csv) as csvfile:
         # Add candidate
         candidate.append(row[2])
 
-    print(f"Total Votes: ", len(ballot_id))
-    print()
-    print("-----------------------")
-    print()
-
-    # find unique values to see all candidates
+        # find unique values to see all candidates
     cand_unq = list(np.unique([candidate]))
 
     # filter candidate list by name to get totals for all candidates
@@ -56,22 +47,29 @@ with open(election_csv) as csvfile:
     vote_count_rad = (len(raymon))
     rad_percentage = (round((vote_count_rad/vote_count*100),3))
 
-    #print results
-    print(cand_unq[0], f": ", ccs_percentage, "% ", "(", vote_count_ccs, ")", sep= "")
-    print()
-    print(cand_unq[1], f": ", dd_percentage, "% ", "(", vote_count_dd, ")", sep= "")
-    print()
-    print(cand_unq[2], f": ", rad_percentage, "% ", "(", vote_count_rad, ")", sep= "")
-    print()
-    print("-----------------------")
-    print()
-
     #find candidate with most votes
     num_votes_per_cand = [vote_count_ccs, vote_count_dd, vote_count_rad]
                    
     #zip candidate with votes
     total_votes = list(zip(cand_unq, num_votes_per_cand))
   
-    print(f"Winner: ", cand_unq[num_votes_per_cand.index(max(num_votes_per_cand))])
-    
+
+output = (
+    f"Election Results\n"
+    f"---------------------\n"
+    f"Total Votes:  {len(ballot_id)}\n"
+    f"---------------------\n"
+    f"{cand_unq[0]}: {ccs_percentage}% ({vote_count_ccs})\n"
+    f"{cand_unq[1]}: {dd_percentage}% ({vote_count_dd})\n"
+    f"{cand_unq[2]}: {rad_percentage}% ({vote_count_rad})\n"
+    f"---------------------\n"
+    f"Winner:  { cand_unq[num_votes_per_cand.index(max(num_votes_per_cand))]}"
+)
+
+with open(output_file,"w") as txtfile:
+    txtfile.write(output)
+    print(output)
+
+
+
    
